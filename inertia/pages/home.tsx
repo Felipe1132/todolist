@@ -20,7 +20,7 @@ export default function Home({ tasks }: HomeProps) {
     title: ''
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const manejarEnvio = (e: React.FormEvent) => {
     e.preventDefault()
     if (data.title.trim()) {
       post('/tasks', {
@@ -29,25 +29,25 @@ export default function Home({ tasks }: HomeProps) {
     }
   }
 
-  const toggleTask = (id: number, completed: boolean) => {
+  const alternarTarea = (id: number, completed: boolean) => {
     router.patch(`/tasks/${id}`, {
       completed: !completed
     })
   }
 
-  const deleteTask = (id: number) => {
+  const eliminarTarea = (id: number) => {
     if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
       router.delete(`/tasks/${id}`)
     }
   }
 
-  const filteredTasks = tasks.filter(task => {
+  const tareasFiltradas = tasks.filter(task => {
     if (filter === 'pending') return !task.completed
     if (filter === 'completed') return task.completed
     return true
   })
 
-  const pendingCount = tasks.filter(task => !task.completed).length
+  const tareasPendientes = tasks.filter(task => !task.completed).length
 
   return (
     <>
@@ -65,7 +65,7 @@ export default function Home({ tasks }: HomeProps) {
           {/* Agregar Nueva Tarea */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Agregar Nueva Tarea</h2>
-            <form onSubmit={handleSubmit} className="flex gap-3">
+            <form onSubmit={manejarEnvio} className="flex gap-3">
               <input
                 type="text"
                 value={data.title}
@@ -87,9 +87,9 @@ export default function Home({ tasks }: HomeProps) {
           {/* Lista de Tareas */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Mis Tareas</h2>
-            <p className="text-gray-600 mb-4">Tienes {pendingCount} tareas pendientes</p>
+            <p className="text-gray-600 mb-4">Tienes {tareasPendientes} tareas pendientes</p>
             
-            {filteredTasks.length === 0 ? (
+            {tareasFiltradas.length === 0 ? (
               <p className="text-gray-500 text-center py-8">
                 {filter === 'all' ? 'No hay tareas' : 
                  filter === 'pending' ? 'No hay tareas pendientes' : 
@@ -97,7 +97,7 @@ export default function Home({ tasks }: HomeProps) {
               </p>
             ) : (
               <div className="space-y-3">
-                {filteredTasks.map((task) => (
+                {tareasFiltradas.map((task) => (
                   <div
                     key={task.id}
                     className={`flex items-center gap-3 p-3 rounded-lg border ${
@@ -107,7 +107,7 @@ export default function Home({ tasks }: HomeProps) {
                     }`}
                   >
                     <button
-                      onClick={() => toggleTask(task.id, task.completed)}
+                      onClick={() => alternarTarea(task.id, task.completed)}
                       className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                         task.completed
                           ? 'bg-blue-600 border-blue-600 text-white'
@@ -132,7 +132,7 @@ export default function Home({ tasks }: HomeProps) {
                     </span>
                     
                     <button
-                      onClick={() => deleteTask(task.id)}
+                      onClick={() => eliminarTarea(task.id)}
                       className="text-red-500 hover:text-red-700 p-1"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

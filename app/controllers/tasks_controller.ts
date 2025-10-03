@@ -7,7 +7,7 @@ export default class TasksController {
     return inertia.render('home', { tasks })
   }
 
-  async store({ request, response }: HttpContext) {
+  async crear({ request, response }: HttpContext) {
     const { title } = request.only(['title'])
     
     await Task.create({
@@ -18,7 +18,7 @@ export default class TasksController {
     return response.redirect().back()
   }
 
-  async update({ params, request, response }: HttpContext) {
+  async actualizar({ params, request, response }: HttpContext) {
     const task = await Task.findOrFail(params.id)
     const { completed } = request.only(['completed'])
     
@@ -32,7 +32,7 @@ export default class TasksController {
     return response.redirect().back()
   }
 
-  async destroy({ params, request, response }: HttpContext) {
+  async eliminar({ params, request, response }: HttpContext) {
     const task = await Task.findOrFail(params.id)
     await task.delete()
 
